@@ -1,30 +1,39 @@
-const express = require('express');
-require('dotenv').config();
+const http = require('http');
+const steamAPI = require('./api/index');
 
-const app = express();
-const port = process.env.PORT || 4000; // port
+const PORT = process.env.PORT || 3000; // port
 const STEAM_API_KEY = process.env.STEAM_API_KEY; // your steam api key
 
-// use express middleware for cross-domain requests
-// set access for all or a specific domain
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // '*' = all  or http://your-domain.com
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET',
+  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+};
+
+const server = http.createServer(async (req, res) => {
+  const baseURL = req.protocol + '://' + req.headers.host + '/';
+  const reqURL = new URL(req.url, baseURL);
+
+  if (req.method === 'GET') {
+    // TODO: handle getURL error
+    const url = steamAPI.getURL(reqURL.pathname, reqURL.search, STEAM_API_KEY);
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      res.writeHead(500, headers);
+      res.end(JSON.stringify({ message: response.statusText }));
+      return;
+    }
+
+    const data = await response.json();
+
+    res.writeHead(200, headers);
+    res.end(JSON.stringify(data));
+    return;
+  }
+
+  res.writeHead(405, headers);
+  res.end(`${req.method} is not allowed for the request.`);
 });
 
-app.get('/:method/:id/', (req, res) => {
-  console.log('[req]:', req.params);
-
-  // const url = createURL(req.params, apikey, req.query, req.originalUrl)
-});
-
-app.get('/:method/:id/:appid/', (req, res) => {
-  console.log('[req]:', req);
-
-  // const url = createURL(req.params, apikey, req.query, req.originalUrl)
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+server.listen(PORT, () => console.log(`server listening on port: ${PORT}`));
