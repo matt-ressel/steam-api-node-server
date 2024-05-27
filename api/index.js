@@ -6,12 +6,17 @@ module.exports = async (req, res) => {
   const reqURL = new URL(req.url, baseURL);
 
   if (req.method === 'GET') {
-    // TODO: handle getURL error
     const url = steamAPI.getURL(reqURL.pathname, reqURL.search, STEAM_API_KEY);
+
+    if (typeof url !== 'string') {
+      res.status(404).json(url);
+      return;
+    }
+
     const response = await fetch(url);
 
     if (!response.ok) {
-      res.status(500).json({ message: response.statusText });
+      res.status(response.status).json({ message: response.statusText });
       return;
     }
 
