@@ -1,4 +1,5 @@
 module.exports = {
+  // http://localhost:3000/GetNewsForApp/292030
   // http://localhost:3000/GetNewsForApp/292030/?count=10&maxlength=500
   GetNewsForApp: (data) => {
     const { id, query } = data;
