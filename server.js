@@ -15,12 +15,18 @@ const server = http.createServer(async (req, res) => {
   const reqURL = new URL(req.url, baseURL);
 
   if (req.method === 'GET') {
-    // TODO: handle getURL error
     const url = steamAPI.getURL(reqURL.pathname, reqURL.search, STEAM_API_KEY);
+
+    if (typeof url !== 'string') {
+      res.writeHead(404, headers);
+      res.end(JSON.stringify(url));
+      return;
+    }
+
     const response = await fetch(url);
 
     if (!response.ok) {
-      res.writeHead(500, headers);
+      res.writeHead(response.status, headers);
       res.end(JSON.stringify({ message: response.statusText }));
       return;
     }
