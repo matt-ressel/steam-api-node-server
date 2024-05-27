@@ -2,9 +2,9 @@
   "name": "steam-api-node-server",
   "version": "0.0.1",
   "description": "Node server for Steam API",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "start api/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "matt-ressel",
