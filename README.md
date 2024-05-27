@@ -49,7 +49,7 @@ const steam_id = '76561198119402590';
 // app_id
 const app_id = '292030';
 // create the Steam API URL we want to use
-const url = `http://localhost:8080/steam/GetPlayerAchievements/${steam_id}/${app_id}`;
+const url = `http://localhost:3000/steam/GetPlayerAchievements/${steam_id}/${app_id}`;
 
 fetch(url)
   .then((res) => res.json())
