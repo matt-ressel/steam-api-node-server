@@ -22,7 +22,7 @@ const getURL = (path, query, key) => {
   if (Object.hasOwn(steamAPI, pathSegment[0])) {
     return steamAPI[pathSegment[0]](URLData);
   } else {
-    console.log('[Method not found]:');
+    return pathSegment[0] ? { message: `method: '${pathSegment[0]}' not found` } : { methods: Object.keys(steamAPI) };
   }
 };
 
